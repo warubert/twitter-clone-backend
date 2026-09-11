@@ -1,0 +1,44 @@
+### Get all users
+GET http://localhost:3000/users
+
+### Get user by username
+GET http://localhost:3000/users/alice
+
+### Create a new user
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "username": "frank",
+    "display_name": "Frank"
+}
+
+### Get all tweets
+GET http://localhost:3000/tweets
+
+### Get tweets by user
+GET http://localhost:3000/users/alice/tweets
+
+### Get feed (tweets from people current user follows)
+GET http://localhost:3000/tweets/feed/00000000-0000-0000-0000-000000000001
+
+### Create a tweet (PostUrl = form-encoded, not JSON)
+POST http://localhost:3000/tweets
+Content-Type: application/json
+
+{
+    "author_id": "00000000-0000-0000-0000-000000000001",
+    "content": "Hello, world!"
+}
+
+### Delete a tweet (replace with a real tweet ID)
+DELETE http://localhost:3000/tweets/00000000-0000-0000-0000-000000000099
+
+### Toggle follow (following_id only — follower comes from current_user_id in AppState)
+POST http://localhost:3000/follows/toggle
+Content-Type: application/json
+
+{
+    "follower_id": "00000000-0000-0000-0000-000000000001",
+    "following_id": "00000000-0000-0000-0000-000000000003"
+}
