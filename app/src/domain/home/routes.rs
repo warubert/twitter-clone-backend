@@ -5,6 +5,14 @@ impl HomeRoutes {
         "/"
     }
 
+    pub fn following_url() -> &'static str {
+        "/following"
+    }
+
+    pub fn following_segment() -> &'static str {
+        "following"
+    }
+
     pub fn label() -> &'static str {
         "Home"
     }

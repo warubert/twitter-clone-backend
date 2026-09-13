@@ -16,28 +16,22 @@ use sqlx::PgPool;
 
 use crate::fallback::file_and_error_handler;
 
-/* ========================================================== */
-/*                         🦀 MAIN 🦀                         */
-/* ========================================================== */
+// TODO: hardcoded for demo purposes only — replace with real auth (session/cookie) later
+const DEMO_USER_ID: uuid::Uuid =
+    uuid::Uuid::from_bytes([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]);
 
 pub async fn build_app_router(conf_file: ConfFile, pool: PgPool) -> anyhow::Result<Router> {
     let leptos_options = conf_file.leptos_options;
-
     let routes = generate_route_list(|| view! { <App /> });
 
-    let app_state = AppState { leptos_options, pool: pool.clone() };
+    let app_state = AppState { leptos_options, pool, current_user_id: DEMO_USER_ID };
 
     Ok(Router::new()
         .route("/api/{*fn_name}", get(server_fn_handler).post(server_fn_handler))
-        // .layer(PropertyAccessLayer::new()) // custom middleware for properties
         .leptos_routes_with_handler(routes, get(leptos_routes_handler))
         .fallback(file_and_error_handler)
         .with_state(app_state))
 }
-
-/* ========================================================== */
-/*                     ✨ FUNCTIONS ✨                        */
-/* ========================================================== */
 
 #[axum_macros::debug_handler]
 pub async fn server_fn_handler(
@@ -59,7 +53,6 @@ pub async fn leptos_routes_handler(
     req: Request<AxumBody>,
 ) -> Response {
     let leptos_options = app_state.leptos_options.clone();
-
     let handler = render_app_to_stream_with_context(
         move || {
             provide_context(app_state.clone());

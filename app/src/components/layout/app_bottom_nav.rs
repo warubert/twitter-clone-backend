@@ -1,4 +1,4 @@
-use icons::{House, Scroll, Settings};
+use icons::{Bell, House, Mail, Search};
 use leptos::prelude::*;
 use leptos_router::hooks::use_navigate;
 
@@ -6,8 +6,6 @@ use crate::components::hooks::use_is_current_path::use_is_current_path;
 use crate::components::ui::bottom_nav::{
     BottomNav, BottomNavButton, BottomNavGrid, BottomNavLabel,
 };
-use crate::domain::settings::routes::SettingsRoutes;
-use crate::domain::template::routing::TemplateRoutes;
 use crate::domain::home::HomeRoutes;
 
 #[component]
@@ -15,10 +13,11 @@ pub fn AppBottomNav() -> impl IntoView {
     let navigate = use_navigate();
     let is_current_path = use_is_current_path();
 
-    let nav_items: [(&'static str, &'static str, AnyView); 3] = [
-        (HomeRoutes::base_url(), HomeRoutes::label(), view! { <House /> }.into_any()),
-        (TemplateRoutes::base_url(), TemplateRoutes::label(), view! { <Scroll /> }.into_any()),
-        (SettingsRoutes::base_url(), SettingsRoutes::label(), view! { <Settings /> }.into_any()),
+    let nav_items: [(&'static str, &'static str, AnyView); 4] = [
+        (HomeRoutes::base_url(), "Home", view! { <House /> }.into_any()),
+        ("/search", "Search", view! { <Search /> }.into_any()),
+        ("/notifications", "Alerts", view! { <Bell /> }.into_any()),
+        ("/messages", "Messages", view! { <Mail /> }.into_any()),
     ];
 
     view! {

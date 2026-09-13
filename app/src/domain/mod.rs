@@ -1,3 +1,4 @@
+pub mod follow;
 pub mod home;
-pub mod settings;
-pub mod template;
+pub mod tweet;
+pub mod user;

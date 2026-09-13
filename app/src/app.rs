@@ -1,16 +1,17 @@
 use leptos::prelude::*;
 use leptos_meta::{Html, Title, provide_meta_context};
-use leptos_router::components::{Outlet, ParentRoute, Route, Router, Routes};
+use leptos_router::components::{ParentRoute, Route, Router, Routes};
 use leptos_router::{ParamSegment, StaticSegment};
 
 use crate::components::hooks::use_theme_mode::ThemeMode;
 use crate::components::layout::app_bottom_nav::AppBottomNav;
 use crate::components::layout::app_wrapper::AppWrapper;
 use crate::components::layout::header::Header;
-use crate::domain::home::{HomePage, HomeRoutes};
-use crate::domain::settings::page_settings::SettingsPage;
-use crate::domain::settings::routes::SettingsRoutes;
-use crate::domain::template::routing::{PageTemplateDetails, TemplatePage, TemplateRoutes};
+use crate::components::layout::left_sidebar::LeftSidebar;
+use crate::components::layout::right_sidebar::RightSidebar;
+use crate::domain::home::{HomeLayout, HomeRoutes};
+use crate::domain::tweet::components::tweet_list::TweetList;
+use crate::domain::user::routing::page_profile::PageProfile;
 use crate::utils::param::PARAM;
 
 #[component]
@@ -20,7 +21,7 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        <Title text="Rust/UI Starters — Cross-Platform Apps" />
+        <Title text="Twitter Clone" />
 
         <Html {..} class=move || if theme_mode.is_dark() { "dark" } else { "" } />
 
@@ -28,17 +29,22 @@ pub fn App() -> impl IntoView {
             <AppWrapper>
                 <Header />
 
-                <main class="overflow-y-auto flex-1 overflow-x-clip">
-                    <Routes fallback=|| view! { <NotFoundPage /> }>
-                        <Route path=StaticSegment(HomeRoutes::base_url()) view=HomePage />
-                        <Route path=StaticSegment(SettingsRoutes::base_segment()) view=SettingsPage />
-                        // Templates
-                        <ParentRoute path=StaticSegment(TemplateRoutes::base_segment()) view=Outlet>
-                            <Route path=StaticSegment("") view=TemplatePage />
-                            <Route path=ParamSegment(PARAM::UNID) view=PageTemplateDetails />
-                        </ParentRoute>
-                    </Routes>
-                </main>
+                <div class="flex flex-1 min-h-0">
+                    <LeftSidebar />
+                    <main class="overflow-y-auto flex-1 overflow-x-clip min-w-0">
+                        <Routes fallback=|| view! { <NotFoundPage /> }>
+                            <ParentRoute path=StaticSegment(HomeRoutes::base_url()) view=HomeLayout>
+                                <Route path=StaticSegment("") view=|| view! { <TweetList /> } />
+                                <Route
+                                    path=StaticSegment(HomeRoutes::following_segment())
+                                    view=|| view! { <TweetList following=true /> }
+                                />
+                            </ParentRoute>
+                            <Route path=ParamSegment(PARAM::USERNAME) view=PageProfile />
+                        </Routes>
+                    </main>
+                    <RightSidebar />
+                </div>
             </AppWrapper>
 
             <AppBottomNav />

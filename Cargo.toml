@@ -54,3 +54,4 @@ bin-features = []
 bin-default-features = false
 lib-features = ["hydrate"]
 lib-default-features = false
+disable-server-fn-hash = true # TODO. Remove this later
